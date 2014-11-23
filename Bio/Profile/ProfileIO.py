@@ -14,6 +14,19 @@ def readProfile( self, filename, format):
 
 def readSgr( self, filename ):
 	sgr_file = file2List( filename )
+	self.values, self.coordinates = {}, {}
+	self.name, self.description = "", ""
+	for line in sgr_file:
+		chromosome, coordinate, value = line
+		if chromosome not in self.values.keys():
+			self.values[ chromosome ] = []
+			self.coordinates[ chromosome ] = []
+		self.values[ chromosome ].append( float(value) )
+		self.coordinates[ chromosome ].append( int(coordinate) )
+	self.resolution = readSgrResolution( self )
+
+def readSgrResolution( profile ):
+	return profile.coordinates.values()[0][1] - profile.coordinates.values()[0][0]				
 		
 	
 
@@ -77,8 +90,6 @@ def writeProfile( self, filename, format ):
 
 def writeSgr( self, writer ):
 	for chromosome in self.getChromosomes():
-		print chromosome
-		print type(self.values)
 		for index in xrange( len( self.values[ chromosome ] )):
 			value = self.values[ chromosome ][index]
 			coordinate = self.coordinates[ chromosome ][index]
