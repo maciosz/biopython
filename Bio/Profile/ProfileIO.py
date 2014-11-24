@@ -126,7 +126,7 @@ def writeWig( self, writer ):
 def createHeader( self ):
 	header = "track"
 	for key in self.metadata:
-		header += " " + key + '="' + self.metadata[ key ] + '"'
+		header += " " + key + '="' + self.metadata[ key ].strip('"') + '"'
 	header += "\n"
 	return header
 				

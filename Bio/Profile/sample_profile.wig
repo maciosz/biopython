@@ -1,4 +1,4 @@
-track name="sample_profile" description="some_random_sample_profile"
+track name="sample profile" description="some random sample profile"
 variableStep	chrom=Chr1	span=50
 31	0.111051
 81	0.138113
