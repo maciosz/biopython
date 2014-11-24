@@ -15,7 +15,8 @@ def readProfile( self, filename, format):
 def readSgr( self, filename ):
 	sgr_file = file2List( filename )
 	self.values, self.coordinates = {}, {}
-	self.name, self.description = "", ""
+	#self.name, self.description = "", ""
+	self.metadata = {}
 	for line in sgr_file:
 		chromosome, coordinate, value = line
 		if chromosome not in self.values.keys():
@@ -32,9 +33,9 @@ def readSgrResolution( profile ):
 
 def readWig( self, filename ):
 	wig_file = file2List( filename )
-	metadata = readWigMetadata( wig_file )
-	self.name = metadata['name']
-	self.description = metadata['description']
+	self.metadata = readWigMetadata( wig_file )
+	#self.name = metadata['name']
+	#self.description = metadata['description']
 	self.resolution = readWigResolution( wig_file )
 	self.values = readWigValues( wig_file )
 	self.coordinates = readWigCoordinates( wig_file )
@@ -42,12 +43,28 @@ def readWig( self, filename ):
 		
 def readWigMetadata( wig_file ):
 	metadata = wig_file[0]
-	metadata_dictionary = {"name":"", "description":""}
+	metadata_dictionary = {}
+	#metadata_dictionary = {"name":"", "description":""}
 	if len(metadata) > 1:
-		for field in metadata[1:]:
-			field = field.strip().split("=")
-			metadata_dictionary[ field[0] ] = field[1]
-	return metadata_dictionary	
+		#for field in metadata[1:]:
+		#	field = field.strip().split("=")
+		#	metadata_dictionary[ field[0] ] = field[1]
+		metadata_dictionary = wigMetadata2Dictionary( metadata )
+	return metadata_dictionary
+
+def wigMetadata2Dictionary( metadata ):
+	if metadata[0] == "track":
+		metadata = metadata[1:]
+	else:
+		print "wig file should start with 'track', something's wrong"
+	metadata = " ".join( metadata )
+	metadata = metadata.split('" ')
+	metadata_dictionary = {}
+	for field in metadata:
+		key, value = field.split('="')
+		metadata_dictionary[ key ] = value
+	return metadata_dictionary
+	
 	
 def readWigResolution( wig_file ):
 	return int( wig_file[1][-1].strip().split('=')[1] )
@@ -107,7 +124,11 @@ def writeWig( self, writer ):
 
 
 def createHeader( self ):
-	return "track name=" + self.name + " description=" + self.description + "\n"
+	header = "track"
+	for key in self.metadata:
+		header += " " + key + '="' + self.metadata[ key ] + '"'
+	header += "\n"
+	return header
 				
 		
 		

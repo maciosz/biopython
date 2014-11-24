@@ -3,8 +3,10 @@ import Profile
 a = Profile.Profile("sample_profile.sgr","sgr")
 b = Profile.Profile("sample_profile.wig", "wig")
 print "nazwy i rozdzielczosci wczytanych profili sample_profile*:"
-print a.name, a.description, a.resolution
-print b.name, b.description, b.resolution
+#print a.name, a.description, a.resolution
+#print b.name, b.description, b.resolution
+print a.metadata
+print b.metadata
 print "zapisuje sample_profile.sgr na proba.sgr i .wig, sample_profile.wig na proba1.sgr, .wig"
 a.writeProfile("proba.sgr","sgr")
 a.writeProfile("proba.wig","wig")
