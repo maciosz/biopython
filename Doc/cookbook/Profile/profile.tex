@@ -44,7 +44,8 @@ Now we will be able to create Profile object
 by reading some profile from file.
 In this tutorial we will use small sample files,
 that you will find in [biopython\_directory]/Bio/Profile/.
-Currently supported profiles are .wig and .sgr.
+Currently supported profiles are .wig and .sgr
+(see section \ref{formats} for details about these formats).
 To load a file to Profile object, type:
 
 \begin{verbatim}
@@ -79,7 +80,7 @@ my_profile = Profile.Profile("biopython/Bio/Profile/sample_profile.wig,
  If readMetadata is True and metadata is provided with addMetadata argument
  they are both read;
  if some field appears in both of them,
- the one form addMetadata overwrites the one from file.
+ the one from addMetadata overwrites the one from file.
 
 \subsection{Writing to file}
 
@@ -156,6 +157,61 @@ Sample pipeline with Profile object might look like that:
 >>> my_profile.setChromosomeNames(new_chromosomes) 
 >>> my_profile.writeProfile("changed_chr_names_and_description.sgr")
 \end{verbatim}
+
+\section{Supported formats}
+\label{formats}
+
+Currently supported formats are .sgr and .wig.
+ .sgr format is assumed to look like this:
+
+\begin{verbatim}
+chr1	1	1.12
+chr1	11	3.432
+chr1	21	5.09
+...
+chr2	2	0
+chr2	12	0.91
+\end{verbatim}
+
+that is, it should have three column:
+ in the first one we have chromosome name,
+ in the second position on the chromosome
+ and value in the third.
+ .wig file should look like this:
+
+\begin{verbatim}
+track name="foo" description="some profile"
+variableStep	chrom=chr1	span=50
+3	12.45
+53	32.454
+103	41.11
+...
+track
+variableStep	chrom=chr2	span=50
+1	4.19
+51	3.78
+\end{verbatim}
+The first line should start with "track", followed by optional metadata.
+ Metadata could be also written like this:
+
+\begin{verbatim} 
+track name=foo description=some_profile
+\end{verbatim}
+
+But if you want to have spaces in your metadata
+ you should use quotation marks
+ (important note: don't mix those two methods).
+ The second line should start with "variableStep"
+ (fixedStep is not yet supported),
+ then "chrom=" followed by chromosome name (no spaces),
+ then optionally span (currently not read).
+ Part describing profile itself should consist from two columns:
+ first is position, second - value.
+ After each chromosome two first lines should be written again
+ (however, the first line could be only "track", the metadata isn't read again).
+ Separator between columns or fields of metadata
+ could be either tab or space.
+
 
 
 \end{document}
