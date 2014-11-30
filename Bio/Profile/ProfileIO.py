@@ -1,22 +1,22 @@
-def readProfile( self, filename, format):
+def readProfile( self, filename, format, args):
 	if not checkIfFileExist( filename ):
 		return None
 	if format=="sgr":
-		#return
 		readSgr( self, filename )
 	elif format=="wig":
-		#return
-		readWig( self, filename )
+		readWig( self, filename, args )
 	else:
 		print "unsupported format"
+	if 'addMetadata' in args.keys():
+		self.metadata.update( args['addMetadata'] )
+
+
 
 
 
 def readSgr( self, filename ):
 	sgr_file = file2List( filename )
-	self.values, self.coordinates = {}, {}
-	#self.name, self.description = "", ""
-	self.metadata = {}
+	self.values, self.coordinates, self.metadata = {}, {}, {}
 	for line in sgr_file:
 		chromosome, coordinate, value = line
 		if chromosome not in self.values.keys():
@@ -31,11 +31,12 @@ def readSgrResolution( profile ):
 		
 	
 
-def readWig( self, filename ):
+def readWig( self, filename, args ):
 	wig_file = file2List( filename )
-	self.metadata = readWigMetadata( wig_file )
-	#self.name = metadata['name']
-	#self.description = metadata['description']
+	if "readMetadata" in args.keys() and args['readMetadata'] == False:
+		self.metadata = {}
+	else:
+		self.metadata = readWigMetadata( wig_file )
 	self.resolution = readWigResolution( wig_file )
 	self.values = readWigValues( wig_file )
 	self.coordinates = readWigCoordinates( wig_file )
