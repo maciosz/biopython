@@ -24,11 +24,12 @@ def readSgr( self, filename ):
 			self.coordinates[ chromosome ] = []
 		self.values[ chromosome ].append( float(value) )
 		self.coordinates[ chromosome ].append( int(coordinate) )
-	self.resolution = readSgrResolution( self )
+	#self.resolution = readSgrResolution( self )
 
+"""
 def readSgrResolution( profile ):
 	return profile.coordinates.values()[0][1] - profile.coordinates.values()[0][0]				
-		
+"""		
 	
 
 def readWig( self, filename, args ):
@@ -37,7 +38,7 @@ def readWig( self, filename, args ):
 		self.metadata = {}
 	else:
 		self.metadata = readWigMetadata( wig_file )
-	self.resolution = readWigResolution( wig_file )
+	#self.resolution = readWigResolution( wig_file )
 	self.values = readWigValues( wig_file )
 	self.coordinates = readWigCoordinates( wig_file )
 
@@ -45,7 +46,6 @@ def readWig( self, filename, args ):
 def readWigMetadata( wig_file ):
 	metadata = wig_file[0]
 	metadata_dictionary = {}
-	#metadata_dictionary = {"name":"", "description":""}
 	if len(metadata) > 1:
 		#for field in metadata[1:]:
 		#	field = field.strip().split("=")
@@ -57,19 +57,36 @@ def wigMetadata2Dictionary( metadata ):
 	if metadata[0] == "track":
 		metadata = metadata[1:]
 	else:
-		print "wig file should start with 'track', something's wrong"
+		print "wig file should start with 'track', something's wrong; metadata will probably not be read correctly"
 	metadata = " ".join( metadata )
-	metadata = metadata.split('" ')
+	if metadata.count("=") == ( metadata.count(" ")+1 ):
+		return readMetadataWithoutSpaces( metadata )
+	else:
+		return readMetadataWithQuotationMarks( metadata )
+
+
+
+
+def readMetadataWithQuotationMarks( metadata ):
+	return readMetadataLine( metadata, '" ', '="')
+
+def readMetadataWithoutSpaces( metadata ):
+	return readMetadataLine( metadata, ' ', '=')
+
+
+def readMetadataLine( metadata, sep1, sep2 ):
+	metadata = metadata.split(sep1)
 	metadata_dictionary = {}
 	for field in metadata:
-		key, value = field.split('="')
-		metadata_dictionary[ key ] = value
+		key, value = field.split(sep2)
+		metadata_dictionary[ key ] = value.strip('"')
 	return metadata_dictionary
+
 	
-	
+"""	
 def readWigResolution( wig_file ):
 	return int( wig_file[1][-1].strip().split('=')[1] )
-
+"""
 
 def readWigValues( wig_file ):
 	return readWigValuesOrCoordinates( wig_file, "values")
@@ -117,7 +134,7 @@ def writeSgr( self, writer ):
 def writeWig( self, writer ):
 	header = createHeader(self)
 	for chromosome in self.getChromosomes():
-		chromosome_description = "variableStep\t" + chromosome + "\tstep=" + str(self.resolution) + "\n"
+		chromosome_description = "variableStep\t" + chromosome + "\n" #"\tstep=" + str(self.resolution) + "\n"
 		writer.write( header )
 		writer.write( chromosome_description )
 		values_to_write = [ str(coordinate)+"\t"+str(value)+"\n" for (coordinate, value) in zip(self.coordinates[ chromosome ], self.values[ chromosome ]) ]
@@ -130,7 +147,7 @@ def createHeader( self ):
 		header += " " + key + '="' + self.metadata[ key ].strip('"') + '"'
 	header += "\n"
 	return header
-				
+
 		
 		
 

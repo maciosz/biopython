@@ -43,19 +43,19 @@ from Bio import Profile
 Now we will be able to create Profile object
 by reading some profile from file.
 In this tutorial we will use small sample files,
-that you will find in [biopython\_directory]/Bio/Profile/.
-Currently supported profiles are .wig and .sgr
+that you will find in [biopython\_directory]/Tests/Profile/.
+Currently supported formats are .wig and .sgr
 (see section \ref{formats} for details about these formats).
 To load a file to Profile object, type:
 
 \begin{verbatim}
-my_profile = Profile.Profile("biopython/Bio/Profile/sample_profile.sgr")
+my_profile = Profile.Profile("biopython/Tests/Profile/sample_profile.sgr")
 \end{verbatim}
 
 or
 
 \begin{verbatim}
-my_profile = Profile.Profile("biopython/Bio/Profile/sample_profile.wig",
+my_profile = Profile.Profile("biopython/Tests/Profile/sample_profile.wig",
 		"wig")
 \end{verbatim}
 
@@ -109,16 +109,16 @@ Object Profile has following attributes:
 
 		\item metadata - it's a dictionary storing all metadata about the Profile,
 			read from the file or provided later with addMetadata function.
-		\item resolution - in case of .wig files,
-			resolution is read from the second line
-			(it should look like this: "variableStep chrom=chr1 span=50,
-			where span is resolution of the profile);
-			in case of .sgr files,
-			it's estimated from first coordinates.
+		%\item resolution - in case of .wig files,
+		%	resolution is read from the second line
+		%	(it should look like this: "variableStep chrom=chr1 span=50,
+		%	where span is resolution of the profile);
+		%	in case of .sgr files,
+		%	it's estimated from first coordinates.
 		\item coordinates - dictionary storing list of coordinates
 			for each chromosome,
 			for which values are defined
-		\item values - dictionary storing list of profile values,
+		\item values - dictionary storing list of profile values for each chromosome,
 			corresponding to coordinates written in coordinates attribute
 
 	\end{itemize}

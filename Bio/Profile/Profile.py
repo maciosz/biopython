@@ -5,10 +5,10 @@ class Profile:
 	def __init__(self, filename, format="sgr", **kvargs):
 		ProfileIO.readProfile( self, filename, format, kvargs)
 
+	"""
 	def getResolution( self ):
 		return self.resolution
-
-	"""
+	
 	def setResolution( self, new_resolution ):
 		self.resolution = new_resolution
 		# of c jeszcze trzeba przerobic profil
